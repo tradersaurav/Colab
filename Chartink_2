@@ -1,0 +1,31 @@
+import pandas as pd
+
+# Step 1: Importing the data from URLs
+stock_df = pd.read_csv('https://api.kite.trade/instruments')  # Read stock data
+symbols_df = pd.read_csv('/content/chartink.csv')  # Read symbols data
+
+# Step 2: Filter NSE segment and extract symbols
+df_nse = stock_df[stock_df['segment'] == 'NSE']
+symbols_list = symbols_df['Symbol'].tolist()
+
+# Step 3: Filter stock data based on symbols list
+filtered_df = df_nse[df_nse['tradingsymbol'].isin(symbols_list)]
+
+# Step 4: Select only the desired columns (you can add more columns if needed)
+filtered_df = filtered_df[['exchange_token', 'tradingsymbol']]
+
+# Step 5: Generate links
+filtered_df['tradingview_link'] = "<a href='https://in.tradingview.com/chart/?symbol=" + filtered_df['tradingsymbol'] + "'>" + filtered_df['tradingsymbol'] + "</a>"
+filtered_df['dhan_link'] = "<a href='https://tv.dhan.co/?symbol=" + filtered_df['exchange_token'].astype(str) + ":" + filtered_df['tradingsymbol'] + "&ispopup=true'>" + filtered_df['tradingsymbol'] + "</a>"
+filtered_df['upstox_link'] = "<a href='https://tv.upstox.com/charts/" + filtered_df['tradingsymbol'] + "_" + filtered_df['exchange_token'].astype(str) + "?isPopup=true'>" + filtered_df['tradingsymbol'] + "</a>"
+filtered_df['zerodha_link'] = "<a href='https://zerodha.com/marketwatch/" + filtered_df['exchange_token'].astype(str) + "'>" + filtered_df['tradingsymbol'] + "</a>"
+filtered_df['fyers_link'] = "<a href='https://fyers.com/market/" + filtered_df['tradingsymbol'] + "'>" + filtered_df['tradingsymbol'] + "</a>"
+filtered_df['table_link'] = "<tr><td>"+filtered_df['tradingview_link']+"</td><td>"+filtered_df['dhan_link']+"</td><td>"+filtered_df['upstox_link']+"</td></tr>"
+filtered_df['dhan_stock'] = "" + filtered_df['tradingsymbol'] + ","
+filtered_df['fyers_stock'] = "NSE:" + filtered_df['tradingsymbol'] + "-EQ,"
+# Step 6: Save the filtered data with links to Excel
+
+filtered_df.to_excel('fi_stocks.xlsx', index=False)
+
+# Print success message
+print("Filtered stock data saved to 'fi_stocks.xlsx'.")
