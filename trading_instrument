@@ -1,0 +1,18 @@
+import pandas as pd
+from datetime import datetime, timedelta
+
+# Step 1: Importing the data
+url = 'https://api.kite.trade/instruments'
+df = pd.read_csv(url)
+
+# Step 2: Filter segment by NFO-OPT, BFO-OPT
+filtered_df = df[df['segment'].isin(['NFO-OPT', 'BFO-OPT','NSE','BSE','NFO-FUT','BFO-FUT'])]
+
+
+
+# Step 3: Select only the desired columns
+filtered_df = filtered_df[['exchange_token', 'tradingsymbol', 'expiry', 'segment', 'lot_size']]
+
+# Step 4: Save to Excel
+output_file = 'trading_instruments.xlsx'
+filtered_df.to_excel(output_file, index=False)
