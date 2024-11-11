@@ -1,0 +1,19 @@
+import pandas as pd
+
+# Step 1: Importing the data from URLs
+stock_df = pd.read_csv('https://api.kite.trade/instruments')  # Read stock data
+symbols_df = pd.read_csv('/content/chartink.csv')  # Read symbols data
+
+# Step 2: Filter NSE segment and extract symbols
+df_nse = stock_df[stock_df['segment'] == 'NSE']
+symbols_list = symbols_df['Symbol'].tolist()
+
+# Step 3: Filter stock data based on symbols list
+filtered_df = df_nse[df_nse['tradingsymbol'].isin(symbols_list)]
+
+
+# Step 4: Save the filtered data to Excel
+filtered_df.to_excel('filtered_stocks.xlsx', index=False)
+
+# Print success message
+print("Filtered stock data saved to 'chartink_stocks.xlsx'.")
