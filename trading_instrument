@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 url = 'https://api.kite.trade/instruments'
 df = pd.read_csv(url)
 
-# Step 2: Filter segment by NFO-OPT, BFO-OPT
+# Step 2: Filter segment
 filtered_df = df[df['segment'].isin(['NFO-OPT', 'BFO-OPT','NSE','BSE','NFO-FUT','BFO-FUT'])]
 
 # Step 3: Select only the desired columns
